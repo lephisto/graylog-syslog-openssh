@@ -1,1 +1,582 @@
-{"id":"2ad6bc9a-a18e-401f-9986-986d4f965e66","rev":1,"v":"1","name":"syslog-openssh","summary":"Extraction of OpenSSH Events that matter","description":"","vendor":"mephisto@mephis.to","url":"https://github.com/lephisto/","created_at":"2019-11-17T22:14:18.150Z","server_version":"3.1.3+cda805f","parameters":[],"entities":[{"id":"f5969123-18ac-45f5-bfe7-612cfd39093d","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"openssh_auth","pattern":"(%{DATA:sshevent}) (%{DATA:sshmethod}) for (%{DATA:sshuser}) from (%{IP:sshsrcip}) port (%{INT:sshsrcport}) (%{DATA:sshver})((?:%{openssh_cipher})|$)"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"e52cf3a9-a2c0-41ac-aa91-2c857cf14f19","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"pam_sudo_session_open","pattern":"pam_unix\\((%{DATA:pam_action})\\): session opened for user (%{WORD:pam_sudo_to}) by (%{WORD:pam_sudo_from})\\(uid\\=(%{INT:pam_uid})\\)$"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"bac9f431-66c4-4c73-a059-9d4dc0f3ac01","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"pam_sudo_auth_failed","pattern":"pam_unix\\((%{DATA:pam_action})\\): (%{DATA:pam_reason}); logname\\=(%{WORD:pam_logname}) uid\\=(%{INT:pam_uid}) euid\\=(%{INT:pam_euid}) tty\\=(%{DATA:pam_tty}) ruser\\=(%{WORD:pam_ruser}) rhost\\=(%{DATA:pam_rhost}) user\\=(%{WORD:pam_user})"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"fd3c6174-3804-4387-954a-19f21d47e242","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"openssh_cipher","pattern":": (%{DATA:sshcipher}) (%{GREEDYDATA:sshsignature})"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"e576b092-5293-47a1-9006-d86aa300aff4","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"openssh_error","pattern":"error: (%{GREEDYDATA:ssherror}) from (%{IP:sshsrcip}) port (%{INT:sshsrcport}):(%{INT:dummy}):(%{GREEDYDATA:ssherrorreason}) \\[(%{DATA:ssherrorstage})\\]$"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"fb2a3f5b-3775-4662-830a-001398e649ab","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"DATA","pattern":".*?"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"6c0bc81a-98c6-4520-b21e-649887899fb4","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"IP","pattern":"(?:%{IPV6}|%{IPV4})"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"985c3e05-a494-4dab-9393-f59c129ed76a","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"INT","pattern":"(?:[+-]?(?:[0-9]+))"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"50ecccd8-e486-4889-8f79-dc7c026604f4","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"WORD","pattern":"\\b\\w+\\b"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"5703c147-e756-4c3e-814a-102d07431f3e","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"GREEDYDATA","pattern":".*"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"530c33ae-dc9b-447a-85fc-6713fdeef582","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"IPV6","pattern":"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"6b6545cc-d7ec-4565-b96c-4d6db86ff8e5","type":{"name":"grok_pattern","version":"1"},"v":"1","data":{"name":"IPV4","pattern":"(?<![0-9])(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))(?![0-9])"},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"59e807c9-c014-41e6-b51e-37ee2a19c85d","type":{"name":"input","version":"1"},"v":"1","data":{"title":{"@type":"string","@value":"linux-syslog"},"configuration":{"expand_structured_data":{"@type":"boolean","@value":false},"recv_buffer_size":{"@type":"integer","@value":262144},"port":{"@type":"integer","@value":1514},"number_worker_threads":{"@type":"integer","@value":12},"force_rdns":{"@type":"boolean","@value":false},"allow_override_date":{"@type":"boolean","@value":true},"bind_address":{"@type":"string","@value":"0.0.0.0"},"store_full_message":{"@type":"boolean","@value":false}},"static_fields":{"linux":{"@type":"string","@value":"true"}},"type":{"@type":"string","@value":"org.graylog2.inputs.syslog.udp.SyslogUDPInput"},"global":{"@type":"boolean","@value":true},"extractors":[{"target_field":{"@type":"string","@value":""},"condition_value":{"@type":"string","@value":""},"order":{"@type":"integer","@value":0},"converters":[],"configuration":{"grok_pattern":{"@type":"string","@value":"%{openssh_auth}|%{openssh_error}"},"named_captures_only":{"@type":"boolean","@value":true}},"source_field":{"@type":"string","@value":"message"},"title":{"@type":"string","@value":"syslog_openssh"},"type":{"@type":"string","@value":"GROK"},"cursor_strategy":{"@type":"string","@value":"COPY"},"condition_type":{"@type":"string","@value":"NONE"}},{"target_field":{"@type":"string","@value":""},"condition_value":{"@type":"string","@value":""},"order":{"@type":"integer","@value":0},"converters":[],"configuration":{"grok_pattern":{"@type":"string","@value":"%{pam_sudo_auth_failed}|%{pam_sudo_session_open}"},"named_captures_only":{"@type":"boolean","@value":true}},"source_field":{"@type":"string","@value":"message"},"title":{"@type":"string","@value":"syslog_pam"},"type":{"@type":"string","@value":"GROK"},"cursor_strategy":{"@type":"string","@value":"COPY"},"condition_type":{"@type":"string","@value":"NONE"}}]},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]},{"id":"b8009179-f189-4af8-b5a3-3e782da5c88f","type":{"name":"stream","version":"1"},"v":"1","data":{"alarm_callbacks":[],"outputs":[],"remove_matches":{"@type":"boolean","@value":true},"title":{"@type":"string","@value":"linux-syslog"},"stream_rules":[{"type":{"@type":"string","@value":"EXACT"},"field":{"@type":"string","@value":"linux"},"value":{"@type":"string","@value":"true"},"inverted":{"@type":"boolean","@value":false},"description":{"@type":"string","@value":""}}],"alert_conditions":[],"matching_type":{"@type":"string","@value":"AND"},"disabled":{"@type":"boolean","@value":false},"description":{"@type":"string","@value":"Syslog of Linux hosts go here."},"default_stream":{"@type":"boolean","@value":false}},"constraints":[{"type":"server-version","version":">=3.1.3+cda805f"}]}]}
+{
+  "v": "1",
+  "id": "2ad6bc9a-a18e-401f-9986-986d4f965e66",
+  "rev": 2,
+  "name": "syslog-openssh",
+  "summary": "Extraction of OpenSSH Events that matter",
+  "description": "",
+  "vendor": "mephisto@mephis.to",
+  "url": "https://github.com/lephisto/",
+  "parameters": [],
+  "entities": [
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "f5969123-18ac-45f5-bfe7-612cfd39093d",
+      "data": {
+        "name": "openssh_auth",
+        "pattern": "(%{DATA:sshevent}) (%{DATA:sshmethod}) for (%{DATA:sshuser}) from (%{IP:sshsrcip}) port (%{INT:sshsrcport}) (%{DATA:sshver})((?:%{openssh_cipher})|$)"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "e52cf3a9-a2c0-41ac-aa91-2c857cf14f19",
+      "data": {
+        "name": "pam_sudo_session_open",
+        "pattern": "pam_unix\\((%{DATA:pam_action})\\): session opened for user (%{WORD:pam_sudo_to}) by (%{WORD:pam_sudo_from})\\(uid\\=(%{INT:pam_uid})\\)$"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "bac9f431-66c4-4c73-a059-9d4dc0f3ac01",
+      "data": {
+        "name": "pam_sudo_auth_failed",
+        "pattern": "pam_unix\\((%{DATA:pam_action})\\): (%{DATA:pam_reason}); logname\\=(%{WORD:pam_logname}) uid\\=(%{INT:pam_uid}) euid\\=(%{INT:pam_euid}) tty\\=(%{DATA:pam_tty}) ruser\\=(%{WORD:pam_ruser}) rhost\\=(%{DATA:pam_rhost}) user\\=(%{WORD:pam_user})"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "fd3c6174-3804-4387-954a-19f21d47e242",
+      "data": {
+        "name": "openssh_cipher",
+        "pattern": ": (%{DATA:sshcipher}) (%{GREEDYDATA:sshsignature})"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "e576b092-5293-47a1-9006-d86aa300aff4",
+      "data": {
+        "name": "openssh_error",
+        "pattern": "error: (%{GREEDYDATA:ssherror}) from (%{IP:sshsrcip}) port (%{INT:sshsrcport}):(%{INT:dummy}):(%{GREEDYDATA:ssherrorreason}) \\[(%{DATA:ssherrorstage})\\]$"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "fb2a3f5b-3775-4662-830a-001398e649ab",
+      "data": {
+        "name": "DATA",
+        "pattern": ".*?"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "6c0bc81a-98c6-4520-b21e-649887899fb4",
+      "data": {
+        "name": "IP",
+        "pattern": "(?:%{IPV6}|%{IPV4})"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "985c3e05-a494-4dab-9393-f59c129ed76a",
+      "data": {
+        "name": "INT",
+        "pattern": "(?:[+-]?(?:[0-9]+))"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "50ecccd8-e486-4889-8f79-dc7c026604f4",
+      "data": {
+        "name": "WORD",
+        "pattern": "\\b\\w+\\b"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "5703c147-e756-4c3e-814a-102d07431f3e",
+      "data": {
+        "name": "GREEDYDATA",
+        "pattern": ".*"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "530c33ae-dc9b-447a-85fc-6713fdeef582",
+      "data": {
+        "name": "IPV6",
+        "pattern": "((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "6b6545cc-d7ec-4565-b96c-4d6db86ff8e5",
+      "data": {
+        "name": "IPV4",
+        "pattern": "(?<![0-9])(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))(?![0-9])"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "8d73974a-2d10-4ae4-b1e5-a9a995007e57",
+      "data": {
+        "name": "openssh_invaliduser",
+        "pattern": "Connection closed by (?<ssherrorreason>%{WORD} %{WORD}) (%{WORD:sshuser}) (%{IP:sshsrcip}) port (%{INT:sshsrcport}) \\[(%{DATA:ssherrorstage})\\]$"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "5f057378-e9fb-4d2a-86dc-dcad05341c6e",
+      "data": {
+        "name": "WORD",
+        "pattern": "\\b\\w+\\b"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "1c56f503-0eaf-4b29-a3ef-e7dcdb748d0a",
+      "data": {
+        "name": "DATA",
+        "pattern": ".*?"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "a5161333-d66b-4b27-8b20-650deb945160",
+      "data": {
+        "name": "IP",
+        "pattern": "(?:%{IPV6}|%{IPV4})"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "a35dc4aa-0be8-4fd5-8508-8184868e3e09",
+      "data": {
+        "name": "INT",
+        "pattern": "(?:[+-]?(?:[0-9]+))"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "48abf069-a759-483e-b1c8-54cce012d99a",
+      "data": {
+        "name": "IPV6",
+        "pattern": "((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "grok_pattern",
+        "version": "1"
+      },
+      "id": "1e3c00c1-6adf-430c-991c-9c2475a13bf1",
+      "data": {
+        "name": "IPV4",
+        "pattern": "(?<![0-9])(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))(?![0-9])"
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "input",
+        "version": "1"
+      },
+      "id": "59e807c9-c014-41e6-b51e-37ee2a19c85d",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "linux-syslog"
+        },
+        "configuration": {
+          "expand_structured_data": {
+            "@type": "boolean",
+            "@value": false
+          },
+          "recv_buffer_size": {
+            "@type": "integer",
+            "@value": 262144
+          },
+          "port": {
+            "@type": "integer",
+            "@value": 1514
+          },
+          "number_worker_threads": {
+            "@type": "integer",
+            "@value": 12
+          },
+          "force_rdns": {
+            "@type": "boolean",
+            "@value": false
+          },
+          "allow_override_date": {
+            "@type": "boolean",
+            "@value": true
+          },
+          "bind_address": {
+            "@type": "string",
+            "@value": "0.0.0.0"
+          },
+          "store_full_message": {
+            "@type": "boolean",
+            "@value": false
+          }
+        },
+        "static_fields": {
+          "linux": {
+            "@type": "string",
+            "@value": "true"
+          }
+        },
+        "type": {
+          "@type": "string",
+          "@value": "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
+        },
+        "global": {
+          "@type": "boolean",
+          "@value": true
+        },
+        "extractors": [
+          {
+            "target_field": {
+              "@type": "string",
+              "@value": ""
+            },
+            "condition_value": {
+              "@type": "string",
+              "@value": ""
+            },
+            "order": {
+              "@type": "integer",
+              "@value": 0
+            },
+            "converters": [],
+            "configuration": {
+              "grok_pattern": {
+                "@type": "string",
+                "@value": "%{openssh_auth}|%{openssh_error}"
+              },
+              "named_captures_only": {
+                "@type": "boolean",
+                "@value": true
+              }
+            },
+            "source_field": {
+              "@type": "string",
+              "@value": "message"
+            },
+            "title": {
+              "@type": "string",
+              "@value": "syslog_openssh"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "GROK"
+            },
+            "cursor_strategy": {
+              "@type": "string",
+              "@value": "COPY"
+            },
+            "condition_type": {
+              "@type": "string",
+              "@value": "NONE"
+            }
+          },
+          {
+            "target_field": {
+              "@type": "string",
+              "@value": ""
+            },
+            "condition_value": {
+              "@type": "string",
+              "@value": ""
+            },
+            "order": {
+              "@type": "integer",
+              "@value": 0
+            },
+            "converters": [],
+            "configuration": {
+              "grok_pattern": {
+                "@type": "string",
+                "@value": "%{pam_sudo_auth_failed}|%{pam_sudo_session_open}"
+              },
+              "named_captures_only": {
+                "@type": "boolean",
+                "@value": true
+              }
+            },
+            "source_field": {
+              "@type": "string",
+              "@value": "message"
+            },
+            "title": {
+              "@type": "string",
+              "@value": "syslog_pam"
+            },
+            "type": {
+              "@type": "string",
+              "@value": "GROK"
+            },
+            "cursor_strategy": {
+              "@type": "string",
+              "@value": "COPY"
+            },
+            "condition_type": {
+              "@type": "string",
+              "@value": "NONE"
+            }
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "stream",
+        "version": "1"
+      },
+      "id": "b8009179-f189-4af8-b5a3-3e782da5c88f",
+      "data": {
+        "alarm_callbacks": [],
+        "outputs": [],
+        "remove_matches": {
+          "@type": "boolean",
+          "@value": true
+        },
+        "title": {
+          "@type": "string",
+          "@value": "linux-syslog"
+        },
+        "stream_rules": [
+          {
+            "type": {
+              "@type": "string",
+              "@value": "EXACT"
+            },
+            "field": {
+              "@type": "string",
+              "@value": "linux"
+            },
+            "value": {
+              "@type": "string",
+              "@value": "true"
+            },
+            "inverted": {
+              "@type": "boolean",
+              "@value": false
+            },
+            "description": {
+              "@type": "string",
+              "@value": ""
+            }
+          }
+        ],
+        "alert_conditions": [],
+        "matching_type": {
+          "@type": "string",
+          "@value": "AND"
+        },
+        "disabled": {
+          "@type": "boolean",
+          "@value": false
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Syslog of Linux hosts go here."
+        },
+        "default_stream": {
+          "@type": "boolean",
+          "@value": false
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=3.1.3+cda805f"
+        }
+      ]
+    }
+  ]
+}
